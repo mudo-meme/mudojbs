@@ -1,0 +1,93 @@
+.full-container {
+    display: flex;
+    flex-direction: column;
+    width: 1344px;
+    margin: 0 auto;
+
+    .upload-container {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        margin-bottom: 12px;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+
+        .file-preview-container {
+            display: flex;
+            width: 70%;
+            height: 700px;
+            border: 1px dashed #6c6c6c;
+            background-color: #f3f3f3;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+
+            p {
+                text-align: center;
+            }
+        }
+
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            width: 30%;
+            font-size: 14px;
+            justify-content: center;
+            align-content: center;
+            gap: 24px;
+
+            p.title {
+                margin-bottom: 12px;
+                font-size: 16px;
+                font-weight: 700;
+            }
+
+            .file-upload-container {
+                button {
+                    width: 100%;
+                    height: 100%;
+                    padding: 8px 0;
+                    background-color: #5b85d9;
+                    color: white;
+                    font-size: 14px;
+                    font-size: 16px;
+                    font-weight: 700;
+                    border-radius: 50px;
+                }
+            }
+
+            .writing-tag-container {
+                .description {
+                    margin-bottom: 24px;
+
+                    ul {
+                        margin-bottom: 4px;
+                    }
+                }
+
+                .tag-input-container {
+                    height: 475px;
+                    border: 1px dashed #6c6c6c;
+                    background-color: white;
+                    border-radius: 5px;
+                }
+            }
+        }
+    }
+
+    .upload-button-container {
+        text-align: right;
+
+        button {
+            width: fit-content;
+            height: 100%;
+            padding: 8px 24px;
+            background-color: #5b85d9;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 50px;
+        }
+    }
+}

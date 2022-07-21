@@ -1,0 +1,24 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+
+    // &:not(div):not(input) {
+    //     font-smooth: auto;
+    //     -webkit-font-smoothing: auto;
+    //     -moz-osx-font-smoothing: auto;
+    //     transform: rotate(0.01deg);
+    // }
+}
+
+input,
+button {
+    outline: none;
+    border: none;
+    appearance: none;
+    background: none;
+}
+
+button {
+    cursor: pointer;
+}
