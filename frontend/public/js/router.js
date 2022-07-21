@@ -30,14 +30,9 @@ const routes = [
     },
 ];
 
-// import HeaderComponent from '../components/header.js';
-
 export default class {
-    // myHeader = new HeaderComponent();
-
     constructor() {
-        console.log();
-        // this.myHeader =
+        console.log('Created Router ');
     }
 
     route = async () => {
@@ -45,7 +40,6 @@ export default class {
 
         const view = new match.view();
         $('#app').innerHTML = await view.getHtml();
-        this.myHeader.updateMenuState(url);
     };
 
     navigate = (url) => {

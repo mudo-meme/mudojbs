@@ -2,21 +2,22 @@ import headerDOM from './header.html';
 import logoImage from '../images/logo_type1.png';
 import '../scss/header.scss';
 
-import Router from '../js/router';
-
-const myRouter = new Router();
-
 const $ = (param) => document.querySelector(param);
 const $$ = (param) => document.querySelectorAll(param);
 
 export default class {
-    constructor() {}
+    myRouter = null;
 
-    init = () => {
+    constructor(srcRouter) {
+        this.setRouter(srcRouter);
+        this.init();
+    }
+
+    init = async () => {
+        $('header').innerHTML = await this.getComponent();
         $('#logo').src = logoImage;
-
         $('header').addEventListener('click', this);
-        window.addEventListener('click', this);
+        window.addEventListener('click', this.windowClickEvent);
     };
 
     clickEvent = (event) => {
@@ -24,10 +25,12 @@ export default class {
             event.preventDefault();
 
             let linkUrl = event.target.dataset.link;
-            myRouter.navigate(linkUrl);
+            this.myRouter.navigate(linkUrl);
             this.updateMenuState(linkUrl);
         }
+    };
 
+    windowClickEvent = (event) => {
         let container = event.target.closest('[data-container]');
 
         if (!container) {
@@ -51,6 +54,10 @@ export default class {
         } else {
             $(`button[data-link='${path}']`).parentNode.classList.add('now');
         }
+    };
+
+    setRouter = (srcRouter) => {
+        this.myRouter = srcRouter;
     };
 
     async getComponent() {

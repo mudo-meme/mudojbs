@@ -1,4 +1,5 @@
 import AbstractView from './AbstractView';
+import SearchView from './SearchView.html';
 import '../scss/search.scss';
 
 export default class extends AbstractView {
@@ -8,6 +9,6 @@ export default class extends AbstractView {
     }
 
     async getHtml() {
-        return `Search`;
+        return SearchView;
     }
 }
