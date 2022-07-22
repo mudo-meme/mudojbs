@@ -17,6 +17,7 @@ const config = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './public/index.html',
+            publicPath: '/',
         }),
 
         new MiniCssExtractPlugin(),

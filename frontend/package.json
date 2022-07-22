@@ -7,9 +7,9 @@
         "build": "webpack --mode=production --node-env=production",
         "build:dev": "webpack --mode=development",
         "build:prod": "webpack --mode=production --node-env=production",
-        "wpwatch": "webpack --watch --mode=development",
+        "frontwatch": "webpack --watch --mode=development",
         "clean": "rimraf dist",
-        "watch": "nodemon"
+        "serverwatch": "nodemon"
     },
     "dependencies": {
         "@babel/runtime": "^7.18.6",
