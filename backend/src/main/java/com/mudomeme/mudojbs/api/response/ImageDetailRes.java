@@ -13,13 +13,13 @@ import lombok.Setter;
 public class ImageDetailRes {
     private Long id;
     private String imageUrl;
-    private List<TagListRes> tags;
+    private List<String> tags;
 
     public static ImageDetailRes of(Image image) {
         return ImageDetailRes.builder()
             .id(image.getId())
             .imageUrl(image.getImageUrl())
-            .tags(image.getImageTags().stream().map(imageTag -> TagListRes.of(imageTag.getTag())).collect(
+            .tags(image.getImageTags().stream().map(imageTag -> imageTag.getTag().getName()).collect(
                 Collectors.toList()))
             .build();
     }
