@@ -4,7 +4,7 @@ import '../scss/search.scss';
 
 import commonInstance from '../js/utils';
 
-import ImageAPI from '../testdatas/image';
+import ImageAPI from '../js/api';
 const imageAPI = new ImageAPI();
 
 export default class extends AbstractView {
@@ -34,18 +34,21 @@ export default class extends AbstractView {
     init = async () => {
         console.log(`${this.searchQuery}를 검색했습니다`);
 
-        // commonInstance.myHeader.setSearchQuery(this.searchQuery);
+        commonInstance.myHeader.setSearchQuery(this.searchQuery);
 
         let imageList = await imageAPI.getImage(this.searchQuery, 1, 50);
 
         for (let imageItem of imageList) {
             let newFigure = this.myDOM.createElement('figure');
+            let newA = this.myDOM.createElement('a');
             let newImg = this.myDOM.createElement('img');
 
             newFigure.setAttribute('class', 'image-item');
-            newFigure.setAttribute('data-link', `/view/${imageItem.imageUrl.split('.')[0]}`);
+            // newFigure.setAttribute('data-link', );
             newImg.setAttribute('src', `../images/test_asset/${imageItem.imageUrl}`);
-            newFigure.appendChild(newImg);
+            newA.setAttribute('href', `/view/${imageItem.imageUrl.split('.')[0]}`);
+            newA.appendChild(newImg);
+            newFigure.appendChild(newA);
 
             this.$('#new-group .tiled-list-container').appendChild(newFigure);
         }

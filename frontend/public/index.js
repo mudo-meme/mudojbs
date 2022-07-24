@@ -1,5 +1,6 @@
 import commonInstance from './js/utils';
 
+import './scss/mediaquery.scss';
 import './scss/common.scss';
 import './scss/fonts.scss';
 
@@ -19,6 +20,7 @@ const init = async () => {
 
     window.addEventListener('DOMContentLoaded', async (event) => {
         console.log('DOMContentLoaded');
+
         myHeader.init();
         myHeader.attachDOM();
         myRouter.route();

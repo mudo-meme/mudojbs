@@ -38,6 +38,8 @@ export default class {
     route = async () => {
         let match = null;
 
+        console.log(location.pathname);
+
         if (location.pathname.startsWith('/view/')) {
             match = routes.find((route) => route.path === '/view');
         } else {
@@ -47,21 +49,25 @@ export default class {
         let urlParams = location.pathname.split('/').splice(2);
         let queryParams = location.search.split('?')[1]?.split('&');
 
-        console.log(queryParams);
-
         const view = new match.view(urlParams, queryParams);
         await view.init();
 
+        let pageName = match.path.substring(1);
+        if (pageName === '') pageName = 'home';
+
         $('#app').innerHTML = '';
+        $('#app').className = '';
+        $('#app').classList.add(pageName);
         $('#app').appendChild(await view.getView());
 
         if (location.pathname.startsWith('/view/')) {
-            window.scrollTo(0, 163);
+            window.scrollTo(0, 0);
         } else if (location.pathname.startsWith('/create')) {
         }
     };
 
     navigate = (url) => {
+        console.log(url);
         history.pushState(null, null, url);
         this.route();
     };

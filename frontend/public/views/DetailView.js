@@ -2,7 +2,7 @@ import AbstractView from './AbstractView';
 import DetailView from './DetailView.html';
 import '../scss/detail.scss';
 
-import ImageAPI from '../testdatas/image';
+import ImageAPI from '../js/api';
 const imageAPI = new ImageAPI();
 
 const $ = (param) => document.querySelector(param);
@@ -33,12 +33,15 @@ export default class extends AbstractView {
 
         for (let imageItem of imageList) {
             let newFigure = this.myDOM.createElement('figure');
+            let newA = this.myDOM.createElement('a');
             let newImg = this.myDOM.createElement('img');
 
             newFigure.setAttribute('class', 'image-item');
-            newFigure.setAttribute('data-link', `/view/${imageItem.imageUrl.split('.')[0]}`);
+            // newFigure.setAttribute('data-link', `/view/${imageItem.imageUrl.split('.')[0]}`);
             newImg.setAttribute('src', `../images/test_asset/${imageItem.imageUrl}`);
-            newFigure.appendChild(newImg);
+            newA.setAttribute('href', `/view/${imageItem.imageUrl.split('.')[0]}`);
+            newA.appendChild(newImg);
+            newFigure.appendChild(newA);
 
             this.$('#related-group .tiled-list-container').appendChild(newFigure);
         }

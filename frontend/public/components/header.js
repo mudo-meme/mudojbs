@@ -18,7 +18,6 @@ export default class {
         this.$('#logo').src = logoImage;
 
         window.addEventListener('click', this.windowClickEvent);
-        // this.updateMenuState(location.pathname);
     };
 
     windowClickEvent = (event) => {
@@ -37,17 +36,17 @@ export default class {
         this[`${event.type}Event`](event);
     };
 
-    updateMenuState = (path) => {
+    updateMenuState = () => {
         [...this.$$('header #menu-list li', document)].forEach((item) =>
             item.classList.remove('now')
         );
 
-        path = `/${path.split('/')[1]}`;
+        let path = `/${location.pathname.split('/')[1]}`;
 
         if (['/', '/search', '/view'].includes(path)) {
-            this.$(`button[data-link='/']`, document).parentNode.classList.add('now');
+            this.$(`header li a[href='/']`, document).parentNode.classList.add('now');
         } else {
-            this.$(`button[data-link='${path}']`, document).parentNode.classList.add('now');
+            this.$(`header li a[href='${path}']`, document).parentNode.classList.add('now');
         }
     };
 
@@ -56,7 +55,8 @@ export default class {
     };
 
     setSearchQuery = (searchQuery) => {
-        this.$('#search-query', document).value = searchQuery;
+        let searchBox = this.$('#search-query') || this.$('#search-query', document);
+        searchBox.value = searchQuery;
     };
 
     attachDOM = async () => {

@@ -13,22 +13,22 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../dist')));
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('/api/image', (req, res, next) => {
-    fs.readdir('../frontend/public/images/test_asset/', (err, files) => {
-        if (err) throw err;
+// app.get('/api/image', (req, res, next) => {
+//     fs.readdir('../frontend/public/images/test_asset/', (err, files) => {
+//         if (err) throw err;
 
-        let resultList = [];
+//         let resultList = [];
 
-        while (resultList.length < +req.query.count) {
-            resultList.push({
-                id: resultList.length,
-                imageUrl: files.at(Math.random() * (files.length - 1) + 1),
-            });
-        }
+//         while (resultList.length < +req.query.count) {
+//             resultList.push({
+//                 id: resultList.length,
+//                 imageUrl: files.at(Math.random() * (files.length - 1) + 1),
+//             });
+//         }
 
-        res.json(resultList);
-    });
-});
+//         res.json(resultList);
+//     });
+// });
 
 app.get('*', (req, res, next) => {
     res.sendFile(path.resolve(__dirname, '../dist/index.html'));

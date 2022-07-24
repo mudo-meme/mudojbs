@@ -8,12 +8,12 @@ const myRouter = new Router();
 const myHeader = new Header(myRouter);
 
 window.addEventListener('click', (event) => {
-    if (event.target.matches('[data-link]')) {
+    if (event.target.matches('a')) {
         event.preventDefault();
 
-        let linkUrl = event.target.dataset.link;
+        let linkUrl = event.target.href;
         myRouter.navigate(linkUrl);
-        myHeader.updateMenuState(linkUrl);
+        myHeader.updateMenuState();
     }
 });
 
