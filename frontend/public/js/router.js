@@ -30,25 +30,44 @@ const routes = [
     },
 ];
 
-// import HeaderComponent from '../components/header.js';
-
 export default class {
-    // myHeader = new HeaderComponent();
-
     constructor() {
-        console.log();
-        // this.myHeader =
+        console.log('Created Router');
     }
 
     route = async () => {
-        let match = routes.find((route) => location.pathname === route.path) || routes[0];
+        let match = null;
 
-        const view = new match.view();
-        $('#app').innerHTML = await view.getHtml();
-        this.myHeader.updateMenuState(url);
+        console.log(location.pathname);
+
+        if (location.pathname.startsWith('/view/')) {
+            match = routes.find((route) => route.path === '/view');
+        } else {
+            match = routes.find((route) => location.pathname === route.path) || routes[0];
+        }
+
+        let urlParams = location.pathname.split('/').splice(2);
+        let queryParams = location.search.split('?')[1]?.split('&');
+
+        const view = new match.view(urlParams, queryParams);
+        await view.init();
+
+        let pageName = match.path.substring(1);
+        if (pageName === '') pageName = 'home';
+
+        $('#app').innerHTML = '';
+        $('#app').className = '';
+        $('#app').classList.add(pageName);
+        $('#app').appendChild(await view.getView());
+
+        if (location.pathname.startsWith('/view/')) {
+            window.scrollTo(0, 0);
+        } else if (location.pathname.startsWith('/create')) {
+        }
     };
 
     navigate = (url) => {
+        console.log(url);
         history.pushState(null, null, url);
         this.route();
     };

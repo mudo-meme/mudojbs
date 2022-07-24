@@ -2,40 +2,33 @@ import headerDOM from './header.html';
 import logoImage from '../images/logo_type1.png';
 import '../scss/header.scss';
 
-import Router from '../js/router';
-
-const myRouter = new Router();
-
-const $ = (param) => document.querySelector(param);
-const $$ = (param) => document.querySelectorAll(param);
-
 export default class {
-    constructor() {}
+    myDOM = new DOMParser().parseFromString(headerDOM, 'text/html');
+    myRouter = null;
 
-    init = () => {
-        $('#logo').src = logoImage;
+    $ = (param, defaultDOM = this.myDOM) => defaultDOM.querySelector(param);
+    $$ = (param, defaultDOM = this.myDOM) => defaultDOM.querySelectorAll(param);
 
-        $('header').addEventListener('click', this);
-        window.addEventListener('click', this);
+    constructor(srcRouter) {
+        this.setRouter(srcRouter);
+        this.init();
+    }
+
+    init = async () => {
+        this.$('#logo').src = logoImage;
+
+        window.addEventListener('click', this.windowClickEvent);
     };
 
-    clickEvent = (event) => {
-        if (event.target.matches('[data-link]')) {
-            event.preventDefault();
-
-            let linkUrl = event.target.dataset.link;
-            myRouter.navigate(linkUrl);
-            this.updateMenuState(linkUrl);
-        }
-
+    windowClickEvent = (event) => {
         let container = event.target.closest('[data-container]');
 
         if (!container) {
-            $(`#related-box`).classList.remove('show');
-            $(`#search-box`).classList.remove('focus');
+            this.$(`#related-box`, document).classList.remove('show');
+            this.$(`#search-box`, document).classList.remove('focus');
         } else {
-            $(`#related-box`).classList.add('show');
-            $(`#search-box`).classList.add('focus');
+            this.$(`#related-box`, document).classList.add('show');
+            this.$(`#search-box`, document).classList.add('focus');
         }
     };
 
@@ -43,17 +36,35 @@ export default class {
         this[`${event.type}Event`](event);
     };
 
-    updateMenuState = (path) => {
-        [...$$('header #menu-list li')].forEach((item) => item.classList.remove('now'));
+    updateMenuState = () => {
+        [...this.$$('header #menu-list li', document)].forEach((item) =>
+            item.classList.remove('now')
+        );
+
+        let path = `/${location.pathname.split('/')[1]}`;
 
         if (['/', '/search', '/view'].includes(path)) {
-            $(`button[data-link='/']`).parentNode.classList.add('now');
+            this.$(`header li a[href='/']`, document).parentNode.classList.add('now');
         } else {
-            $(`button[data-link='${path}']`).parentNode.classList.add('now');
+            this.$(`header li a[href='${path}']`, document).parentNode.classList.add('now');
         }
     };
 
+    setRouter = (srcRouter) => {
+        this.myRouter = srcRouter;
+    };
+
+    setSearchQuery = (searchQuery) => {
+        let searchBox = this.$('#search-query') || this.$('#search-query', document);
+        searchBox.value = searchQuery;
+    };
+
+    attachDOM = async () => {
+        this.$('header', document).innerHTML = '';
+        this.$('header', document).appendChild(await this.getComponent());
+    };
+
     async getComponent() {
-        return headerDOM;
+        return this.myDOM.body.childNodes[0];
     }
 }

@@ -1,5 +1,5 @@
 {
-    "exec": "npm-run-all -p clean build:dev start",
-    "watch": ["src/*", "public/*"],
+    "exec": "npm-run-all -p start",
+    "watch": ["src/*"],
     "ext": "js, html, scss, json"
 }

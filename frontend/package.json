@@ -7,9 +7,9 @@
         "build": "webpack --mode=production --node-env=production",
         "build:dev": "webpack --mode=development",
         "build:prod": "webpack --mode=production --node-env=production",
-        "wpwatch": "webpack --watch --mode=development",
+        "frontwatch": "webpack --watch --mode=development",
         "clean": "rimraf dist",
-        "watch": "nodemon"
+        "serverwatch": "nodemon"
     },
     "dependencies": {
         "@babel/runtime": "^7.18.6",
@@ -31,6 +31,8 @@
         "html-loader": "^4.1.0",
         "html-webpack-plugin": "^5.5.0",
         "mini-css-extract-plugin": "^2.6.1",
+        "nodemon": "^2.0.19",
+        "npm-run-all": "^4.1.5",
         "postcss": "^8.4.14",
         "postcss-loader": "^6.2.1",
         "prettier": "^2.6.2",

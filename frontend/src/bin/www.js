@@ -8,7 +8,7 @@ import app from '../app.js';
 import debugLib from 'debug';
 import http from 'http';
 
-const debug = debugLib('your-project-name:server'); // generated code below.
+const debug = debugLib('mudojbs:server'); // generated code below.
 
 /**
  * Get port from environment and store in Express.

@@ -1,24 +1,33 @@
 * {
+    box-sizing: border-box;
     padding: 0;
     margin: 0;
-    box-sizing: border-box;
+    color: black;
 
     // &:not(div):not(input) {
     //     font-smooth: auto;
     //     -webkit-font-smoothing: auto;
     //     -moz-osx-font-smoothing: auto;
-    //     transform: rotate(0.01deg);
+    //     transform: rotate(0.03deg);
     // }
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 input,
 button {
-    outline: none;
     border: none;
-    appearance: none;
     background: none;
+    outline: none;
+    appearance: none;
 }
 
 button {
     cursor: pointer;
+}
+
+a {
+    text-decoration: none;
 }
