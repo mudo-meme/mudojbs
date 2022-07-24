@@ -41,7 +41,7 @@ public class ImageController {
 
     @GetMapping
     public ResponseEntity<Page<ImageListRes>> pageImages(
-        @PageableDefault(size = 15, sort = "viewCount", direction = Direction.DESC) Pageable pageable,
+        @PageableDefault(size = 50, sort = "viewCount", direction = Direction.DESC) Pageable pageable,
         @RequestParam(defaultValue = "") String query
     ) {
         Page<Image> images = imageService.pageByName(pageable, query);
@@ -71,7 +71,7 @@ public class ImageController {
     }
 
     @GetMapping("/random")
-    public ResponseEntity<List<ImageListRes>> listRandomImages(@RequestParam(defaultValue = "15") Integer size) {
+    public ResponseEntity<List<ImageListRes>> listRandomImages(@RequestParam(defaultValue = "50") Integer size) {
         List<Image> images = imageService.listRandomImages(size);
         List<ImageListRes> res = images.stream().map(image -> ImageListRes.of(image))
             .collect(Collectors.toList());
