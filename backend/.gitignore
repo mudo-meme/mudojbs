@@ -37,7 +37,7 @@ build/
 .vscode/
 
 # log files
-billy.log*
+mudojbs.log*
 
 # properties secret
 /src/main/resources/application-local.properties
