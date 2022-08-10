@@ -1,0 +1,102 @@
+@import '../../styles/mixins';
+
+div.image-view-container {
+    width: 100%;
+
+    div.origin-image-container {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+        width: 100%;
+        margin-bottom: 24px;
+        background-color: black;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+
+        img#originImg {
+            margin: 0 auto;
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+
+    div.tag-list-container {
+        width: 100%;
+        overflow-x: scroll;
+
+        ul.tag-list {
+            display: flex;
+            flex-direction: row;
+            white-space: nowrap;
+            list-style: none;
+            gap: 12px;
+
+            li.tag-item {
+                a {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                    padding: 6px 18px;
+                    background-color: #5b85d9;
+                    color: white;
+                    font-size: 18px;
+                    font-weight: 700;
+                    border-radius: 50px;
+                }
+            }
+        }
+
+        &::-webkit-scrollbar {
+            width: 16px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border: 4px solid transparent;
+            background: #606060;
+            border-radius: 8px;
+            background-clip: content-box;
+        }
+    }
+}
+
+@include mobile {
+    div.image-view-container {
+        div.origin-image-container {
+            margin-bottom: 12px;
+        }
+
+        div.tag-list-container {
+            ul.tag-list {
+                li.tag-item {
+                    a {
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include tablet {
+    div.image-view-container {
+        div.origin-image-container {
+            margin-bottom: 18px;
+        }
+
+        div.tag-list-container {
+            ul.tag-list {
+                li.tag-item {
+                    a {
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,37 +1,53 @@
-import express from 'express';
-import path from 'path';
-import cookieParser from 'cookie-parser';
-import logger from 'morgan';
-import fs from 'fs';
+import Header from './components/header/header';
+import Router from './js/router';
 
-const app = express();
+const myHeader = new Header();
+const myRouter = new Router();
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../dist')));
-app.use(express.static(path.join(__dirname, '../public')));
+import CustomEvents from './js/events';
 
-// app.get('/api/image', (req, res, next) => {
-//     fs.readdir('../frontend/public/images/test_asset/', (err, files) => {
-//         if (err) throw err;
+import './styles/common.scss';
 
-//         let resultList = [];
+class App {
+    constructor() {}
 
-//         while (resultList.length < +req.query.count) {
-//             resultList.push({
-//                 id: resultList.length,
-//                 imageUrl: files.at(Math.random() * (files.length - 1) + 1),
-//             });
-//         }
+    init = () => {
+        window.addEventListener('popstate', (event) => {
+            myRouter.route();
+        });
 
-//         res.json(resultList);
-//     });
-// });
+        window.addEventListener('DOMContentLoaded', async (event) => {
+            console.log('DOMContentLoaded');
 
-app.get('*', (req, res, next) => {
-    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
-});
+            const root = document.querySelector('main#app');
+            const body = document.body;
 
-export default app;
+            const config = { attributes: true, childList: true, subtree: true };
+            const observer = new MutationObserver((mutation, observer) => {
+                observer.disconnect();
+                window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('header'), { once: true });
+            });
+
+            observer.observe(root, config);
+
+            myHeader.init();
+
+            body.insertBefore(await myHeader.getComponent(), root);
+            myRouter.route();
+        });
+
+        window.addEventListener('click', (event) => {
+            let linkElem = event.target.closest('a');
+
+            if (linkElem) {
+                event.stopPropagation();
+                event.preventDefault();
+
+                myRouter.navigate(linkElem.href);
+            }
+        });
+    };
+}
+
+const myApp = new App();
+myApp.init();

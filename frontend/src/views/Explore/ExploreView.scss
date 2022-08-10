@@ -1,0 +1,44 @@
+@import '../../styles/mixins';
+
+main.explore div.page-container {
+    width: 100%;
+    padding: 0 0 24px;
+
+    div.page-inside {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 48px;
+        margin: 0 auto;
+        max-width: 1440px;
+
+        p#not-ready {
+            text-align: center;
+            width: 100%;
+            font-size: 24px;
+            font-weight: 700;
+
+            &-description {
+                text-align: center;
+            }
+        }
+    }
+}
+
+@include mobile {
+    main.explore div.page-container {
+        div.page-inside {
+            padding: 0 12px;
+            gap: 24px;
+        }
+    }
+}
+
+@include tablet {
+    main.explore div.page-container {
+        div.page-inside {
+            padding: 0 48px;
+            gap: 24px;
+        }
+    }
+}

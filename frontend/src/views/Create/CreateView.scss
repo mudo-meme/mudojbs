@@ -1,0 +1,148 @@
+@import '../../styles/mixins';
+
+main.create div.page-container {
+    width: 100%;
+    padding: 0 0 24px;
+
+    div.page-inside {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 48px;
+        margin: 0 auto;
+        max-width: 1440px;
+
+        div.upload-container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+            margin-bottom: 12px;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+
+            div.upload-section {
+                display: flex;
+                flex-direction: column;
+                width: 30%;
+                height: 700px;
+                font-size: 14px;
+                justify-content: center;
+                align-content: center;
+                gap: 24px;
+
+                p.title {
+                    margin-bottom: 12px;
+                    font-size: 16px;
+                    font-weight: 700;
+                }
+
+                div.writing-tag-container {
+                    div.description {
+                        margin-bottom: 24px;
+                        padding-left: 24px;
+                        ul {
+                            margin-bottom: 4px;
+                        }
+                    }
+                }
+
+                div.tag-input-container {
+                    flex-grow: 1;
+                }
+            }
+        }
+
+        div.upload-button-container {
+            text-align: right;
+
+            button#upload {
+                width: fit-content;
+                height: 100%;
+                padding: 8px 24px;
+                border: none;
+                background-color: #5b85d9;
+                color: white;
+                font-size: 14px;
+                outline: none;
+                appearance: none;
+                font-weight: 700;
+                border-radius: 50px;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+@keyframes alarm {
+    from {
+        background-color: rgb(233, 86, 86);
+    }
+
+    to {
+        background-color: #f3f3f3;
+    }
+}
+
+@include mobile {
+    main.create div.page-container {
+        div.page-inside {
+            padding: 0 12px;
+
+            div.upload-container {
+                flex-direction: column;
+
+                div.file-preview-container {
+                    display: none;
+                    width: 100%;
+                    height: 250px;
+
+                    &.loaded {
+                        display: block;
+                    }
+                }
+
+                div.upload-section {
+                    width: 100%;
+                    height: 100%;
+
+                    div.tag-input-container {
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include tablet {
+    main.create div.page-container {
+        div.page-inside {
+            padding: 0 48px;
+
+            div.upload-container {
+                flex-direction: column;
+
+                div.file-preview-container {
+                    display: none;
+                    width: 100%;
+                    height: 500px;
+
+                    &.loaded {
+                        display: block;
+                    }
+                }
+
+                div.upload-section {
+                    width: 100%;
+                    height: 500px;
+
+                    div.tag-input-container {
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
