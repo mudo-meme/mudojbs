@@ -1,0 +1,267 @@
+@import '../../styles/mixins';
+
+header {
+    width: 100%;
+    height: 168px;
+    padding: 60px 0;
+
+    .header-inside {
+        width: 100%;
+        height: 100%;
+        padding: 0 48px;
+        margin: 0 auto;
+        max-width: 1440px;
+
+        .logo-container {
+            height: 100%;
+            margin-right: 70px;
+            float: left;
+
+            a {
+                display: block;
+                height: 100%;
+                pointer-events: all;
+
+                #logo {
+                    height: 48px;
+                    pointer-events: none;
+                }
+            }
+        }
+
+        .menu-container {
+            height: 100%;
+            margin-right: 70px;
+            float: left;
+
+            ul#menu-list {
+                display: flex;
+                height: 100%;
+                align-items: center;
+                gap: 47px;
+                list-style: none;
+
+                li {
+                    font-size: 24px;
+
+                    a {
+                        display: block;
+                    }
+
+                    &:last-of-type {
+                        margin-right: 0;
+                    }
+
+                    &.now {
+                        position: relative;
+                        font-weight: 700;
+
+                        &::after {
+                            display: block;
+                            width: 100%;
+                            height: 4px;
+                            position: absolute;
+                            bottom: -8px;
+                            background-color: black;
+                            content: '';
+                        }
+                    }
+                }
+            }
+        }
+
+        .search-container {
+            width: 100%;
+            position: relative;
+            float: left;
+            max-width: calc(100% - 570.75px);
+
+            #search-box {
+                display: flex;
+                flex-direction: row;
+                // height: 100%;
+                padding: 0 12px;
+                background-color: #f3f3f3;
+                align-items: center;
+                gap: 4px;
+                border-radius: 100px;
+
+                div.mobile-back {
+                    display: none;
+                }
+
+                #search-query {
+                    width: 100%;
+                    height: 100%;
+                    padding: 12px 0;
+
+                    border: none;
+                    background: none;
+                    font-size: 16px;
+                    outline: none;
+                    appearance: none;
+                }
+
+                &.focus {
+                    border-radius: 5px 5px 0px 0px;
+                }
+            }
+
+            #related-box {
+                display: none;
+                width: 100%;
+                border: 1px solid #f3f3f3;
+                position: absolute;
+                background-color: white;
+                border-top: none;
+                border-radius: 0 0 5px 5px;
+
+                ul {
+                    display: flex;
+                    flex-direction: column;
+                    padding: 12px 0px;
+                    list-style: none;
+
+                    li {
+                        display: flex;
+                        flex-direction: row;
+                        padding: 8px 24px;
+                        justify-content: center;
+                        align-items: center;
+                        gap: 6px;
+
+                        .icon span {
+                            font-size: 32px;
+                            font-variation-settings: 'OPSZ' 32;
+                        }
+
+                        .result-section {
+                            flex-grow: 1;
+
+                            .result-name {
+                                font-size: 16px;
+                                font-weight: 700;
+                            }
+
+                            .result-count {
+                                color: #6c6c6c;
+                                font-size: 14px;
+                                font-weight: 400;
+                            }
+                        }
+
+                        &:hover {
+                            background-color: #f3f3f3;
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                &.show {
+                    display: block;
+                }
+            }
+        }
+    }
+}
+
+// margin: 24px auto 48px;
+// padding: 0 24px;
+// gap: 30px;
+
+@include mobile {
+    :root {
+        --now-media: mobile;
+    }
+
+    header {
+        height: auto;
+        padding: 24px 0;
+
+        .header-inside {
+            display: flex;
+            flex-direction: column;
+            padding: 0 12px;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+
+            .logo-container {
+                margin-right: 0;
+                clear: both;
+            }
+
+            .menu-container {
+                margin-right: 0;
+                clear: both;
+            }
+
+            .search-container {
+                clear: both;
+                max-width: none;
+
+                &.mobile {
+                    width: calc(100% - 24px);
+                    height: calc((100% - 24px));
+                    position: absolute;
+                    top: 12px;
+                    left: 12px;
+
+                    #search-box {
+                        .icon:first-child {
+                            display: none;
+                        }
+
+                        div.mobile-back {
+                            display: block;
+                            cursor: pointer;
+                        }
+                    }
+
+                    #related-box {
+                        height: calc(100% - 48px);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include tablet {
+    :root {
+        --now-media: tablet;
+    }
+
+    header {
+        height: auto;
+
+        .header-inside {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 45px;
+
+            .logo-container {
+                margin-right: 0;
+                clear: both;
+            }
+
+            .menu-container {
+                margin-right: 0;
+                clear: both;
+            }
+
+            .search-container {
+                clear: both;
+                max-width: none;
+            }
+        }
+    }
+}
+
+@include desktop {
+    :root {
+        --now-media: desktop;
+    }
+}
