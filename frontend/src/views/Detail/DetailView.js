@@ -42,8 +42,9 @@ export default class extends AbstractView {
         imageViewComponent = new ImageView(this.imageId);
         masonryComponent = new MasonryList('related', '관련 이미지');
 
-        masonryComponent.setLoadFunction(async () => {
-            this.appendImages(await imageAPI.getImageRelated());
+        masonryComponent.setLoadFunction(async function () {
+            console.log('from DetailView');
+            this.appendImages(await imageAPI.getImageRandom());
         });
 
         // masonryComponent.appendImages(await imageAPI.getImage('임시', 1, 30), true);

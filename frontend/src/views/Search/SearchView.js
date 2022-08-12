@@ -17,6 +17,7 @@ const $$ = (param, defaultDOM = document) => defaultDOM.querySelectorAll(param);
 
 export default class extends AbstractView {
     searchQuery = null;
+    currentPage = 1;
 
     constructor(urlParams = null, queryParams = null) {
         super();
@@ -42,6 +43,14 @@ export default class extends AbstractView {
 
     attachComponent = async () => {
         masonryComponent = new MasonryList('search', `${this.searchQuery}에 관한 검색결과`);
+
+        masonryComponent.setLoadFunction(
+            async function (params) {
+                console.log(params);
+                // this.appendImages((await imageAPI.getImage(query, page, 30)).content, true);
+            },
+            { query: this.searchQuery, page: this.currentPage }
+        );
 
         const root = $('.page-inside', myDOM);
         root.innerHTML = '';

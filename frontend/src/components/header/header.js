@@ -90,6 +90,8 @@ export default class {
 
         let path = `/${location.pathname.split('/')[1]}`;
 
+        // console.log(path);
+
         if (['/', '/search', '/view'].includes(path)) {
             $(`header li a[href='/']`).parentNode.classList.add('now');
         } else {

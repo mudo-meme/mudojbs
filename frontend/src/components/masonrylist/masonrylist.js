@@ -46,8 +46,10 @@ export default class {
         window.addEventListener('resize', this.resizeEvent);
     };
 
-    setLoadFunction = (func) => {
+    setLoadFunction = (func, params) => {
+        func.bind(this, params);
         this.loadFunc = func;
+        // this.loadFunc.bind(this);
     };
 
     resizeEvent = (event) => {
@@ -81,53 +83,52 @@ export default class {
     };
 
     appendImages = async (imageList, initial = false) => {
-        let listObject = null;
-
-        if (!this.isDev) {
-            listObject = imageList;
-        } else {
-            listObject = imageList;
-        }
-
-        for (let imageItem of listObject) {
-            let newDiv = initial ? this.myDOM.createElement('div') : document.createElement('div');
-            let newA = initial ? this.myDOM.createElement('a') : document.createElement('a');
-            let newImg = initial ? this.myDOM.createElement('img') : document.createElement('img');
-
-            if (this.isDev) {
-                newA.setAttribute('href', `/view/${imageItem.imageUrl.split('.')[0]}`);
-                newImg.setAttribute('src', `../images/test_asset/${imageItem.imageUrl}`);
-            } else {
-                newA.setAttribute('href', `/view/${imageItem.id}`);
-                newImg.setAttribute('src', `${imageItem.imageUrl}`);
-            }
-
-            newDiv.setAttribute('class', 'masonry-item');
-            newImg.addEventListener('load', this.masonryLayout, { once: true });
-            newA.appendChild(newImg);
-            newDiv.appendChild(newA);
-
-            if (initial) {
-                $('.masonry-container', this.myDOM).appendChild(newDiv);
-            } else {
-                $('.masonry-container').appendChild(newDiv);
-            }
+        for (let item of imageList) {
+            this.loadImage(item.imageUrl).then((element) => {
+                this.createMasonryItem({ element, id: item.id });
+            });
         }
     };
 
-    waitForImages = () => {
-        const allMasonryItems = [...$$('.masonry-item img')];
-        const allPromises = allMasonryItems.map(
-            (item) =>
-                new Promise((res) => {
-                    if (item.complete) return res();
-                    item.onload = () => res();
-                    item.onerror = () => res();
-                })
-        );
+    createMasonryItem = (itemInfo) => {
+        let newDiv = document.createElement('div');
+        let newA = document.createElement('a');
 
-        return Promise.all(allPromises);
+        newA.setAttribute('href', `/view/${itemInfo.id}`);
+        newA.appendChild(itemInfo.element);
+        newDiv.setAttribute('class', 'masonry-item');
+        newDiv.appendChild(newA);
+
+        $('.masonry-container').appendChild(newDiv);
+        this.masonryLayout();
     };
+
+    loadImage = async (url) => {
+        return new Promise((resolve, reject) => {
+            const tmpImg = document.createElement('img');
+            tmpImg.setAttribute('src', url);
+
+            tmpImg.addEventListener('load', (event) => resolve(tmpImg), {
+                once: true,
+            });
+
+            tmpImg.src = url;
+        });
+    };
+
+    // waitForImages = () => {
+    //     const allMasonryItems = [...$$('.masonry-item img')];
+    //     const allPromises = allMasonryItems.map(
+    //         (item) =>
+    //             new Promise((res) => {
+    //                 if (item.complete) return res();
+    //                 item.onload = () => res();
+    //                 item.onerror = () => res();
+    //             })
+    //     );
+
+    //     return Promise.all(allPromises);
+    // };
 
     attached = async (event) => {
         switch (event.detail.target) {
@@ -140,31 +141,40 @@ export default class {
                 break;
         }
 
-        await this.waitForImages();
-        this.masonryLayout();
+        // await this.waitForImages();
+        // this.masonryLayout();
 
-        let lastItem = $('.masonry-item:last-child');
+        // const config = { attributes: true, childList: true, subtree: true };
+        // const observer = new MutationObserver((mutation, observer) => {
+        //     let lastItem = $('.masonry-item:last-child');
 
-        const io = new IntersectionObserver(
-            async (entry, observer) => {
-                const ioTarget = entry[0].target;
+        //     // console.log(lastItem);
+        //     const io = new IntersectionObserver(
+        //         async (entry, observer) => {
+        //             const ioTarget = entry[0].target;
+        //             // console.log(ioTarget);
+        //             io.unobserve(ioTarget);
 
-                if (entry[0].isIntersecting) {
-                    io.unobserve(lastItem);
-                    // this.appendImages(await imageAPI.getImageRandom());
-                    console.log(this.loadFunc);
-                    this.loadFunc();
+        //             //         if (entry[0].isIntersecting) {
+        //             //             io.unobserve(lastItem);
 
-                    lastItem = $('.masonry-item:last-child');
-                    io.observe(lastItem);
-                }
-            },
-            {
-                threshold: 0.5,
-            }
-        );
+        //             //             await this.loadFunc();
+        //             //             // await this.waitForImages();
 
-        io.observe(lastItem);
+        //             //             lastItem = $('.masonry-item:last-child');
+        //             //             io.observe(lastItem);
+        //             //         }
+        //         },
+        //         {
+        //             threshold: 0.5,
+        //         }
+        //     );
+
+        //     io.disconnect();
+        //     io.observe(lastItem);
+        // });
+
+        // observer.observe($('div.masonry-container'), config);
     };
 
     deattached = (event) => {

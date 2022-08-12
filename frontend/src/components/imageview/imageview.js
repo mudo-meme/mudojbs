@@ -22,7 +22,6 @@ export default class {
 
     init = async () => {
         window.addEventListener(`ATTACHED_COMPONENT_imageview_`, this.attached, { once: true });
-        // 나중에 API 호출에서 Image Info 얻어오기
     };
 
     attached = async (event) => {
@@ -33,6 +32,27 @@ export default class {
         } else {
             this.targetInfo = await imageAPI.getImageDetail(this.imageId);
             $('#originImg').src = this.targetInfo.imageUrl;
+        }
+
+        this.appendTags();
+    };
+
+    appendTags = () => {
+        // <li class="tag-item">
+        //     <a href="/search/무한도전">#무한도전</a>
+        // </li>;
+
+        for (let item of this.targetInfo.tags) {
+            const newA = document.createElement('a');
+            const newLi = document.createElement('li');
+
+            newA.setAttribute('href', `/search/${item}`);
+            newA.textContent = item;
+
+            newLi.setAttribute('class', 'tag-item');
+            newLi.appendChild(newA);
+
+            $('ul.tag-list').appendChild(newLi);
         }
     };
 
