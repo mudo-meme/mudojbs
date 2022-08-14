@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,6 +84,14 @@ public class ImageController {
     public ResponseEntity<ImageDetailRes> getImage(@PathVariable Long id) {
         Image image = imageService.getImage(id);
         ImageDetailRes res = ImageDetailRes.of(image);
+
+        return ResponseEntity.ok(res);
+    }
+
+    @PatchMapping("/{id}/view-count")
+    public ResponseEntity<ImageListRes> plusViewCount(@PathVariable Long id) {
+        Image image = imageService.plusViewCount(id);
+        ImageListRes res = ImageListRes.of(image);
 
         return ResponseEntity.ok(res);
     }

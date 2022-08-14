@@ -20,7 +20,6 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
 
 import static com.mudomeme.mudojbs.db.entity.QImage.image;
-import static com.mudomeme.mudojbs.db.entity.QTag.tag;
 import static com.mudomeme.mudojbs.db.entity.QImageTag.imageTag;
 
 public class ImageCustomRepositoryImpl extends QuerydslRepositorySupport implements ImageCustomRepository {

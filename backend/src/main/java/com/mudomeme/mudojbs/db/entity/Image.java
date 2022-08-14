@@ -47,4 +47,8 @@ public class Image extends BaseEntity {
     public void setImageTags(List<ImageTag> imageTags) {
         this.imageTags = imageTags;
     }
+
+    public void plusViewCount() {
+        this.viewCount += 1;
+    }
 }
