@@ -91,4 +91,14 @@ public class ImageService {
             .orElseThrow(() -> new ApiException(ExceptionEnum.IMAGE_NOT_FOUND));
         return image;
     }
+
+    @Transactional
+    public Image plusViewCount(Long id) {
+        Image image = imageRepository.findById(id)
+            .orElseThrow(() -> new ApiException(ExceptionEnum.IMAGE_NOT_FOUND));
+        image.plusViewCount();
+        Image resImage = imageRepository.save(image);
+
+        return resImage;
+    }
 }
