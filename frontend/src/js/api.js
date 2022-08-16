@@ -7,7 +7,7 @@ export default class {
     constructor() {}
 
     getImage = async (query, page = 1, size = 15) => {
-        let fetchPromise = await this.myfetch(`/image?size=${size}`);
+        let fetchPromise = await this.myfetch(`/image?query=${query}&size=${size}&page=${page}`);
         return await fetchPromise.json();
     };
 

@@ -31,10 +31,28 @@ export default class {
             $('#originImg', this.myDOM).src = `/images/test_asset/${this.imageId}.jpg`;
         } else {
             this.targetInfo = await imageAPI.getImageDetail(this.imageId);
-            $('#originImg').src = this.targetInfo.imageUrl;
+            // $('#originImg').src = this.targetInfo.imageUrl;
+            const originImg = await this.loadImage(this.targetInfo.imageUrl);
+            originImg.setAttribute('id', 'originImg');
+
+            $('div.origin-image-container').classList.remove('loading');
+            $('div.origin-image-container').appendChild(originImg);
         }
 
         this.appendTags();
+    };
+
+    loadImage = async (url) => {
+        return new Promise((resolve, reject) => {
+            const tmpImg = document.createElement('img');
+            tmpImg.setAttribute('src', url);
+
+            tmpImg.addEventListener('load', (event) => resolve(tmpImg), {
+                once: true,
+            });
+
+            tmpImg.src = url;
+        });
     };
 
     appendTags = () => {

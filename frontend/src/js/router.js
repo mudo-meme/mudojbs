@@ -62,10 +62,13 @@ export default class {
 
         const root = $('#app');
 
+        console.log(currentPath);
+
         // const config2 = { attributes: true, childList: true, subtree: true };
         // const observer2 = new MutationObserver((mutation, observer) => {
         // observer.disconnect();
-        if (currentPath !== null) window.dispatchEvent(CustomEvents.DEATTACHED_VIEW(pageName));
+        if (currentPath !== null) window.dispatchEvent(CustomEvents.DEATTACHED_VIEW(currentPath));
+        // window.dispatchEvent(CustomEvents.DEATTACHED_VIEW(pageName));
         // });
 
         // observer2.observe(root, config2);
@@ -95,7 +98,7 @@ export default class {
         } else if (location.pathname.startsWith('/create')) {
         }
 
-        currentPath = match.path;
+        currentPath = pageName;
     };
 
     navigate = (url) => {

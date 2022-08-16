@@ -20,6 +20,9 @@ export default class {
 
     attached = async (event) => {
         console.log('Attached filepreview Component');
+        $('div.file-preview-container').addEventListener('dragenter', this.dragenterEvent);
+        $('div.file-preview-container').addEventListener('dragover', this.dragoverEvent);
+        $('div.file-preview-container').addEventListener('drop', this.dropEvent);
     };
 
     dragenterEvent = (event) => {

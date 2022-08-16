@@ -35,6 +35,12 @@ export default class {
         if (event.code === 'Space' || event.code === 'Enter' || event.code === 'NumpadEnter') {
             const tagQuery = $('input#tag-query').value.trim();
             if (tagQuery !== '') this.appendTagItem(tagQuery);
+        } else if (event.code === 'Backspace') {
+            if (this.myTags.length < 1) return;
+
+            this.myTags.pop();
+            const targetItem = $('.inputed-tag-item:last-of-type');
+            targetItem.parentNode.removeChild(targetItem);
         }
 
         event.preventDefault();

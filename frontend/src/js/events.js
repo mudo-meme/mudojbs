@@ -32,4 +32,18 @@ const DEATTACHED_COMPONENT = (type, target = '') => {
     });
 };
 
-export default { ATTACHED_VIEW, ATTACHED_COMPONENT, DEATTACHED_VIEW, DEATTACHED_COMPONENT };
+const CONTENT_LOAD = (target) => {
+    return new CustomEvent('CONTENT_LOAD', {
+        detail: {
+            target,
+        },
+    });
+};
+
+export default {
+    ATTACHED_VIEW,
+    ATTACHED_COMPONENT,
+    DEATTACHED_VIEW,
+    DEATTACHED_COMPONENT,
+    CONTENT_LOAD,
+};

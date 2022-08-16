@@ -1,6 +1,8 @@
 import masonryListDOM from './masonrylist.html';
 import './masonrylist.scss';
 
+import CustomEvents from '../../js/events';
+
 import ImageAPI from '../../js/api';
 const imageAPI = new ImageAPI();
 
@@ -12,8 +14,6 @@ export default class {
     isAttached = false;
     containerName = null;
     isDev = false;
-
-    loadFunc = null;
 
     constructor(containerName, title = '') {
         this.containerName = containerName;
@@ -46,12 +46,6 @@ export default class {
         window.addEventListener('resize', this.resizeEvent);
     };
 
-    setLoadFunction = (func, params) => {
-        func.bind(this, params);
-        this.loadFunc = func;
-        // this.loadFunc.bind(this);
-    };
-
     resizeEvent = (event) => {
         this.debounce(this.masonryLayout(event), 5);
     };
@@ -82,12 +76,36 @@ export default class {
         });
     };
 
-    appendImages = async (imageList, initial = false) => {
+    appendImages = async (imageList) => {
+        let loadPromises = [];
+
         for (let item of imageList) {
-            this.loadImage(item.imageUrl).then((element) => {
-                this.createMasonryItem({ element, id: item.id });
-            });
+            loadPromises.push(this.loadImage(item.imageUrl));
         }
+
+        let listObject = await Promise.all(loadPromises);
+
+        listObject = listObject.map((item, index) => {
+            return { index, element: item, id: imageList[index].id };
+        });
+
+        listObject.forEach((item) => {
+            this.createMasonryItem({ element: item.element, id: item.id });
+        });
+    };
+
+    waitForImages = () => {
+        const allMasonryItems = [...$$('.masonry-item img')];
+        const allPromises = allMasonryItems.map(
+            (item) =>
+                new Promise((res) => {
+                    if (item.complete) return res();
+                    item.onload = () => res();
+                    item.onerror = () => res();
+                })
+        );
+
+        return Promise.all(allPromises);
     };
 
     createMasonryItem = (itemInfo) => {
@@ -116,20 +134,6 @@ export default class {
         });
     };
 
-    // waitForImages = () => {
-    //     const allMasonryItems = [...$$('.masonry-item img')];
-    //     const allPromises = allMasonryItems.map(
-    //         (item) =>
-    //             new Promise((res) => {
-    //                 if (item.complete) return res();
-    //                 item.onload = () => res();
-    //                 item.onerror = () => res();
-    //             })
-    //     );
-
-    //     return Promise.all(allPromises);
-    // };
-
     attached = async (event) => {
         switch (event.detail.target) {
             case 'new':
@@ -141,43 +145,32 @@ export default class {
                 break;
         }
 
-        // await this.waitForImages();
-        // this.masonryLayout();
+        const config = { attributes: true, childList: true, subtree: true };
+        const observer = new MutationObserver((mutation, observer) => {
+            let lastItem = $('.masonry-item:last-child');
 
-        // const config = { attributes: true, childList: true, subtree: true };
-        // const observer = new MutationObserver((mutation, observer) => {
-        //     let lastItem = $('.masonry-item:last-child');
+            const io = new IntersectionObserver(
+                async (entry, observer) => {
+                    const ioTarget = entry[0].target;
 
-        //     // console.log(lastItem);
-        //     const io = new IntersectionObserver(
-        //         async (entry, observer) => {
-        //             const ioTarget = entry[0].target;
-        //             // console.log(ioTarget);
-        //             io.unobserve(ioTarget);
+                    if (entry[0].isIntersecting) {
+                        io.unobserve(lastItem);
+                        window.dispatchEvent(CustomEvents.CONTENT_LOAD());
+                    }
+                },
+                {
+                    threshold: 0.5,
+                }
+            );
 
-        //             //         if (entry[0].isIntersecting) {
-        //             //             io.unobserve(lastItem);
+            io.observe(lastItem);
+        });
 
-        //             //             await this.loadFunc();
-        //             //             // await this.waitForImages();
-
-        //             //             lastItem = $('.masonry-item:last-child');
-        //             //             io.observe(lastItem);
-        //             //         }
-        //         },
-        //         {
-        //             threshold: 0.5,
-        //         }
-        //     );
-
-        //     io.disconnect();
-        //     io.observe(lastItem);
-        // });
-
-        // observer.observe($('div.masonry-container'), config);
+        observer.observe($('div.masonry-container'), config);
     };
 
     deattached = (event) => {
+        console.log(`Dattached masonrylist(${event.detail.target}) component`);
         window.removeEventListener('resize', this.resizeEvent);
     };
 

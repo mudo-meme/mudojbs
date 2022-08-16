@@ -75,6 +75,7 @@ header {
             position: relative;
             float: left;
             max-width: calc(100% - 570.75px);
+            z-index: 999;
 
             #search-box {
                 display: flex;

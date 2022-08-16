@@ -31,6 +31,8 @@ export default class extends AbstractView {
         myDOM = new DOMParser().parseFromString(DetailView, 'text/html');
 
         window.addEventListener(`ATTACHED_VIEW`, this.attached, { once: true });
+        window.addEventListener('DEATTACHED_VIEW', this.deattached, { once: true });
+        window.addEventListener(`CONTENT_LOAD`, this.contentLoad);
 
         await this.attachComponent();
     };
@@ -41,17 +43,16 @@ export default class extends AbstractView {
 
         imageViewComponent = new ImageView(this.imageId);
         masonryComponent = new MasonryList('related', '관련 이미지');
-
-        masonryComponent.setLoadFunction(async function () {
-            console.log('from DetailView');
-            this.appendImages(await imageAPI.getImageRandom());
-        });
-
         // masonryComponent.appendImages(await imageAPI.getImage('임시', 1, 30), true);
         masonryComponent.appendImages(await imageAPI.getImageRandom(), true);
 
         root.appendChild(await imageViewComponent.getComponent());
         root.appendChild(await masonryComponent.getComponent());
+    };
+
+    contentLoad = async (event) => {
+        console.log('from DetailView');
+        masonryComponent.appendImages(await imageAPI.getImageRandom());
     };
 
     attached = (event) => {
@@ -60,6 +61,15 @@ export default class extends AbstractView {
 
             window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('imageview'));
             window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'related'));
+        }
+    };
+
+    deattached = (event) => {
+        if (event.detail.target === 'detail') {
+            console.log('Deattached Detail View');
+            // TODO Spread the event to components
+            window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('imageview'));
+            window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('masonrylist', 'related'));
         }
     };
 

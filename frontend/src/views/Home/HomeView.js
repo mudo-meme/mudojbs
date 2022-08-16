@@ -30,6 +30,7 @@ export default class extends AbstractView {
 
         window.addEventListener('ATTACHED_VIEW', this.attached, { once: true });
         window.addEventListener('DEATTACHED_VIEW', this.deattached, { once: true });
+        window.addEventListener('CONTENT_LOAD', this.contentLoad);
 
         await this.attachComponent();
     };
@@ -45,7 +46,7 @@ export default class extends AbstractView {
 
             popularComponent.createEleFromImages(await imageAPI.getImagePopular());
             recentComponent.createEleFromImages(await imageAPI.getImageNew());
-            masonryComponent.appendImages(await imageAPI.getImageRandom(), true);
+            masonryComponent.appendImages(await imageAPI.getImageRandom());
         }
     };
 
@@ -64,17 +65,17 @@ export default class extends AbstractView {
         recentComponent = new ImageList('recent', '#최근_추가된_짤');
         masonryComponent = new MasonryList('new', '새로운 짤을 발견해보세요!');
 
-        masonryComponent.setLoadFunction(async function () {
-            console.log('from HomeView');
-            this.appendImages(await imageAPI.getImageRandom());
-        });
-
         const root = $('.page-inside', myDOM);
         // root.innerHTML = '';
 
         root.appendChild(await popularComponent.getComponent());
         root.appendChild(await recentComponent.getComponent());
         root.appendChild(await masonryComponent.getComponent());
+    };
+
+    contentLoad = async (event) => {
+        console.log('from HomeView');
+        masonryComponent.appendImages(await imageAPI.getImageRandom());
     };
 
     async getView() {
