@@ -41,19 +41,6 @@ export default class extends AbstractView {
             window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'search'));
 
             this.contentLoad();
-            // const reponseData = await imageAPI.getImage(this.searchQuery, this.currentPage, 30);
-
-            // if (reponseData.empty) {
-            //     alert('없어용');
-            //     // TODO show the error page
-            //     return;
-            // }
-
-            // if (!reponseData.last) {
-            //     this.appendImages(reponseData.content);
-            //     window.dispatchEvent(CustomEvents.CONTENT_LOAD('Asd'));
-            // } else {
-            // }
         }
     };
 
@@ -63,10 +50,11 @@ export default class extends AbstractView {
         console.log(reponseData);
 
         if (reponseData.empty) {
-            alert('없어용');
+            // alert('없어용');
             return;
         }
-        masonryComponent.appendImages(reponseData.content);
+
+        await masonryComponent.appendImages(reponseData.content);
 
         window.addEventListener('CONTENT_LOAD', this.contentLoad, { once: true });
         this.currentPage++;
@@ -74,27 +62,6 @@ export default class extends AbstractView {
 
     attachComponent = async () => {
         masonryComponent = new MasonryList('search', `${this.searchQuery}에 관한 검색결과`);
-
-        // masonryComponent.setLoadFunction(
-        //     async function (params) {
-        //         // console.log(params.query, params.page);
-
-        //         const reponseData = await imageAPI.getImage(params.query, params.page, 30);
-
-        //         console.log(reponseData);
-
-        //         if (reponseData.empty) {
-        //             alert('없어용');
-        //         }
-
-        //         if (!reponseData.last) {
-        //             this.appendImages(reponseData.content);
-        //             window.dispatchEvent(CustomEvents.CONTENT_LOADED('Asd'));
-        //         } else {
-        //         }
-        //     },
-        //     { query: this.searchQuery, page: this.currentPage }
-        // );
 
         const root = $('.page-inside', myDOM);
         root.innerHTML = '';
