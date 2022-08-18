@@ -25,6 +25,12 @@ export default class {
             { once: true }
         );
 
+        window.addEventListener(
+            `DEATTACHED_COMPONENT_imagelist_${this.containerName}`,
+            this.deattached,
+            { once: true }
+        );
+
         $('div.image-list-container', this.myDOM).dataset.container = this.containerName;
         $('p.title', this.myDOM).textContent = title;
         $('button.load-more', this.myDOM).addEventListener('click', this.clickEvent);
@@ -45,6 +51,10 @@ export default class {
             'click',
             this.clickEvent
         );
+    };
+
+    deattached = (event) => {
+        console.log(`Deattached imagelist(${event.detail.target}) Component`);
     };
 
     clickEvent = (event) => {

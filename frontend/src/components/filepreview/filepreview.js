@@ -1,6 +1,8 @@
 import filePreviewDOM from './filepreview.html';
 import './filepreview.scss';
 
+import CustomEvents from '../../js/events';
+
 import ImageAPI from '../../js/api';
 const imageAPI = new ImageAPI();
 
@@ -16,6 +18,9 @@ export default class {
 
     init = async () => {
         window.addEventListener(`ATTACHED_COMPONENT_filepreview_`, this.attached, { once: true });
+        window.addEventListener(`DEATTACHED_COMPONENT_filepreview_`, this.deattached, {
+            once: true,
+        });
     };
 
     attached = async (event) => {
@@ -23,6 +28,10 @@ export default class {
         $('div.file-preview-container').addEventListener('dragenter', this.dragenterEvent);
         $('div.file-preview-container').addEventListener('dragover', this.dragoverEvent);
         $('div.file-preview-container').addEventListener('drop', this.dropEvent);
+    };
+
+    deattached = (event) => {
+        console.log('Deattached filepreview Component');
     };
 
     dragenterEvent = (event) => {
@@ -42,7 +51,11 @@ export default class {
         const dt = event.dataTransfer;
         const files = dt.files;
 
-        this.handleFiles(files);
+        window.dispatchEvent(CustomEvents.ADDED_PRVIEW_ITEM(files));
+
+        // console.log(files);
+
+        // this.handleFiles(files);
     };
 
     handleFiles = (files) => {

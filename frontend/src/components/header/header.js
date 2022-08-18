@@ -68,6 +68,7 @@ export default class {
             this.isOpend = false;
         } else {
             const isMobile = this.isMobileNow();
+            this.currentQuery = $('#search-query').value.trim();
 
             if (isMobile && container) {
                 if (event.target.closest('.mobile-back')) {

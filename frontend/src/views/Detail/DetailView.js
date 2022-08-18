@@ -30,8 +30,9 @@ export default class extends AbstractView {
     init = async () => {
         myDOM = new DOMParser().parseFromString(DetailView, 'text/html');
 
-        window.addEventListener(`ATTACHED_VIEW`, this.attached, { once: true });
-        window.addEventListener('DEATTACHED_VIEW', this.deattached, { once: true });
+        window.addEventListener(`ATTACHED_VIEW_view`, this.attached, { once: true });
+        window.addEventListener('DEATTACHED_VIEW_view', this.deattached, { once: true });
+
         window.addEventListener(`CONTENT_LOAD`, this.contentLoad);
 
         await this.attachComponent();
@@ -56,21 +57,19 @@ export default class extends AbstractView {
     };
 
     attached = (event) => {
-        if (event.detail.target === 'view') {
-            console.log('Attached Detail View');
+        console.log('Attached Detail View');
 
-            window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('imageview'));
-            window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'related'));
-        }
+        window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('imageview'));
+        window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'related'));
     };
 
     deattached = (event) => {
-        if (event.detail.target === 'detail') {
-            console.log('Deattached Detail View');
-            // TODO Spread the event to components
-            window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('imageview'));
-            window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('masonrylist', 'related'));
-        }
+        console.log('Deattached Detail View');
+        // TODO Spread the event to components
+        window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('imageview'));
+        window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('masonrylist', 'related'));
+
+        window.removeEventListener(`CONTENT_LOAD`, this.contentLoad);
     };
 
     async getView() {

@@ -22,6 +22,7 @@ export default class {
 
     init = async () => {
         window.addEventListener(`ATTACHED_COMPONENT_imageview_`, this.attached, { once: true });
+        window.addEventListener(`DEATTACHED_COMPONENT_imageview_`, this.deattached, { once: true });
     };
 
     attached = async (event) => {
@@ -40,6 +41,10 @@ export default class {
         }
 
         this.appendTags();
+    };
+
+    deattached = (event) => {
+        console.log('Deattached ImageView Component');
     };
 
     loadImage = async (url) => {

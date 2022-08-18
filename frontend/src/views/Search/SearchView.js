@@ -28,20 +28,28 @@ export default class extends AbstractView {
     init = async () => {
         myDOM = new DOMParser().parseFromString(SearchView, 'text/html');
 
-        window.addEventListener('ATTACHED_VIEW', this.attached, { once: true });
+        window.addEventListener('ATTACHED_VIEW_search', this.attached, { once: true });
+        window.addEventListener('DEATTACHED_VIEW_search', this.deattached, { once: true });
+
         window.addEventListener('CONTENT_LOAD', this.contentLoad);
 
         await this.attachComponent();
     };
 
     attached = async (event) => {
-        if (event.detail.target === 'search') {
-            console.log('Attached Search View');
-            // TODO Spread the event to components
-            window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'search'));
+        console.log('Attached Search View');
+        // TODO Spread the event to components
+        window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'search'));
 
-            this.contentLoad();
-        }
+        this.contentLoad();
+    };
+
+    deattached = (event) => {
+        console.log('Deattached Search View');
+
+        window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('masonrylist', 'search'));
+
+        window.removeEventListener('CONTENT_LOAD', this.contentLoad);
     };
 
     contentLoad = async (event) => {
@@ -56,7 +64,6 @@ export default class extends AbstractView {
 
         await masonryComponent.appendImages(reponseData.content);
 
-        window.addEventListener('CONTENT_LOAD', this.contentLoad, { once: true });
         this.currentPage++;
     };
 

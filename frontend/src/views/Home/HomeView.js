@@ -28,36 +28,35 @@ export default class extends AbstractView {
     init = async () => {
         myDOM = new DOMParser().parseFromString(HomeView, 'text/html');
 
-        window.addEventListener('ATTACHED_VIEW', this.attached, { once: true });
-        window.addEventListener('DEATTACHED_VIEW', this.deattached, { once: true });
+        window.addEventListener('ATTACHED_VIEW_home', this.attached, { once: true });
+        window.addEventListener('DEATTACHED_VIEW_home', this.deattached, { once: true });
+
         window.addEventListener('CONTENT_LOAD', this.contentLoad);
 
         await this.attachComponent();
     };
 
     attached = async (event) => {
-        if (event.detail.target === 'home') {
-            console.log('Attached Home View');
+        console.log('Attached Home View');
 
-            // TODO Spread the event to components
-            window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('imagelist', 'popular'));
-            window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('imagelist', 'recent'));
-            window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'new'));
+        // TODO Spread the event to components
+        window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('imagelist', 'popular'));
+        window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('imagelist', 'recent'));
+        window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'new'));
 
-            popularComponent.createEleFromImages(await imageAPI.getImagePopular());
-            recentComponent.createEleFromImages(await imageAPI.getImageNew());
-            masonryComponent.appendImages(await imageAPI.getImageRandom());
-        }
+        popularComponent.createEleFromImages(await imageAPI.getImagePopular());
+        recentComponent.createEleFromImages(await imageAPI.getImageNew());
+        masonryComponent.appendImages(await imageAPI.getImageRandom());
     };
 
     deattached = (event) => {
-        if (event.detail.target === 'home') {
-            console.log('Deattached Home View');
-            // TODO Spread the event to components
-            window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('imagelist', 'popular'));
-            window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('imagelist', 'recent'));
-            window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('masonrylist', 'new'));
-        }
+        console.log('Deattached Home View');
+        // TODO Spread the event to components
+        window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('imagelist', 'popular'));
+        window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('imagelist', 'recent'));
+        window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('masonrylist', 'new'));
+
+        window.removeEventListener('CONTENT_LOAD', this.contentLoad);
     };
 
     attachComponent = async () => {

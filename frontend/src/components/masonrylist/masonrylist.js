@@ -135,15 +135,7 @@ export default class {
     };
 
     attached = async (event) => {
-        switch (event.detail.target) {
-            case 'new':
-                console.log(`Attached masonrylist(${event.detail.target}) component`);
-                break;
-
-            case 'related':
-                console.log(`Attached masonrylist(${event.detail.target}) component`);
-                break;
-        }
+        console.log(`Attached masonrylist(${event.detail.target}) component`);
 
         const config = { attributes: true, childList: true, subtree: true };
         const observer = new MutationObserver((mutation, observer) => {
