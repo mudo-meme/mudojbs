@@ -28,12 +28,19 @@ export default class {
     attached = async (event) => {
         console.log('Attached tagbox Component');
 
+        $('input#tag-query').addEventListener('keydown', this.keyDownEvent);
         $('input#tag-query').addEventListener('keyup', this.keyUpEvent);
         $('div.tag-input-container').addEventListener('click', this.clickEvent);
     };
 
     deattached = (event) => {
         console.log('Deattached tagbox Component');
+    };
+
+    preText = null;
+
+    keyDownEvent = (event) => {
+        this.preText = $('input#tag-query').value.trim();
     };
 
     keyUpEvent = (event) => {
@@ -47,6 +54,7 @@ export default class {
         } else if (event.code === 'Backspace') {
             if (this.myTags.length < 1) return;
             if (tagQuery !== '') return;
+            if (this.preText !== '') return;
 
             this.myTags.pop();
             const targetItem = $('.inputed-tag-item:last-of-type');

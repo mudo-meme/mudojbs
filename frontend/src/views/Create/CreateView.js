@@ -94,8 +94,9 @@ export default class extends AbstractView {
 
                 this.myFiles.push(newItem);
 
-                filePreview.showImage(newItem.data);
+                // filePreview.showImage(this.myFiles[0].data);
                 previewList.appendPreviewItem(newItem);
+                this.selectedItem({ detail: { id: this.myFiles[0].id } });
             });
         }
     };
@@ -104,6 +105,14 @@ export default class extends AbstractView {
         console.log(event);
         this.myFiles = this.myFiles.filter((item) => item.id !== event.detail.id);
         previewList.deletePreviewItem(event.detail.id);
+
+        const currentIndex = this.myFiles.findIndex((item) => item.id === this.currentId);
+
+        if (currentIndex === -1) {
+            filePreview.hideImage();
+        } else {
+            filePreview.pagination(currentIndex + 1, this.myFiles.length);
+        }
     };
 
     isExist = (file) =>
@@ -132,6 +141,13 @@ export default class extends AbstractView {
                 tagBox.appendTagItem(item.text);
             });
         }
+
+        if ($('div.navigate').classList.contains('hide')) {
+            $('div.navigate').classList.remove('hide');
+        }
+
+        const currentIndex = this.myFiles.findIndex((item) => item.id === this.currentId);
+        filePreview.pagination(currentIndex + 1, this.myFiles.length);
     };
 
     updatedTagList = (event) => {
@@ -159,7 +175,7 @@ export default class extends AbstractView {
 
         for (let uploadItem of this.myFiles) {
             const formData = new FormData();
-            formData.append('image', uploadItem.data);
+            formData.append('image', uploadItem.file);
             formData.append(
                 'tags',
                 new Blob([JSON.stringify(uploadItem.tags.map((item) => item.text))], {
@@ -173,8 +189,6 @@ export default class extends AbstractView {
                 contentType: 'multipart/form-data',
                 redirect: 'follow',
             };
-
-            console.log(requestOptions);
 
             uploadPromises.push(fetch('https://imbilly.site/api/v1/image', requestOptions));
         }

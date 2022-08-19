@@ -80,6 +80,18 @@ export default class {
         $('#preview-image').src = imageData;
         $('.file-preview-container > .image-wrapper').classList.add('loaded');
         $('.file-preview-container > p').classList.add('hide');
+        $('div.navigate').classList.remove('hide');
+    };
+
+    hideImage = () => {
+        $('#preview-image').src = '';
+        $('.file-preview-container > .image-wrapper').classList.remove('loaded');
+        $('.file-preview-container > p').classList.remove('hide');
+        $('div.navigate').classList.add('hide');
+    };
+
+    pagination = (currentPage, maxPage) => {
+        $('div.navigate p.page').textContent = `${currentPage} / ${maxPage}`;
     };
 
     async getComponent() {
