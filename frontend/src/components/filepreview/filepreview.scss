@@ -1,4 +1,5 @@
 div.file-preview-container {
+    position: relative;
     display: flex;
     width: 70%;
     height: 700px;
@@ -38,6 +39,25 @@ div.file-preview-container {
 
         &.loaded {
             display: flex;
+        }
+    }
+
+    div.navigate {
+        position: absolute;
+        bottom: 24px;
+        padding: 0 12px;
+        // border: 1px solid #6c6c6c;
+        border-radius: 50px;
+        background-color: rgba(white, 0.5);
+
+        p.page {
+            padding: 4px 0;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        &.hide {
+            display: none;
         }
     }
 }

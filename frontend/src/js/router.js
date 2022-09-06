@@ -35,7 +35,7 @@ const routes = [
     },
 ];
 
-let currentPath = null;
+let currentPath = '';
 
 export default class {
     constructor() {}
@@ -62,13 +62,10 @@ export default class {
 
         const root = $('#app');
 
-        // const config2 = { attributes: true, childList: true, subtree: true };
-        // const observer2 = new MutationObserver((mutation, observer) => {
-        // observer.disconnect();
-        if (currentPath !== null) window.dispatchEvent(CustomEvents.DEATTACHED_VIEW(pageName));
-        // });
+        // console.log('이전경로: ' + currentPath);
+        // console.log('현재경로: ' + pageName);
 
-        // observer2.observe(root, config2);
+        if (currentPath !== '') window.dispatchEvent(CustomEvents.DEATTACHED_VIEW(currentPath));
 
         root.innerHTML = '';
         root.className = pageName;
@@ -95,7 +92,7 @@ export default class {
         } else if (location.pathname.startsWith('/create')) {
         }
 
-        currentPath = match.path;
+        currentPath = pageName;
     };
 
     navigate = (url) => {

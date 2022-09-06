@@ -17,6 +17,7 @@ const $$ = (param, defaultDOM = document) => defaultDOM.querySelectorAll(param);
 
 export default class extends AbstractView {
     searchQuery = null;
+    currentPage = 1;
 
     constructor(urlParams = null, queryParams = null) {
         super();
@@ -27,17 +28,43 @@ export default class extends AbstractView {
     init = async () => {
         myDOM = new DOMParser().parseFromString(SearchView, 'text/html');
 
-        window.addEventListener('ATTACHED_VIEW', this.attached, { once: true });
+        window.addEventListener('ATTACHED_VIEW_search', this.attached, { once: true });
+        window.addEventListener('DEATTACHED_VIEW_search', this.deattached, { once: true });
+
+        window.addEventListener('CONTENT_LOAD', this.contentLoad);
 
         await this.attachComponent();
     };
 
-    attached = (event) => {
-        if (event.detail.target === 'search') {
-            console.log('Attached Search View');
-            // TODO Spread the event to components
-            window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'search'));
+    attached = async (event) => {
+        console.log('Attached Search View');
+        // TODO Spread the event to components
+        window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'search'));
+
+        this.contentLoad();
+    };
+
+    deattached = (event) => {
+        console.log('Deattached Search View');
+
+        window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('masonrylist', 'search'));
+
+        window.removeEventListener('CONTENT_LOAD', this.contentLoad);
+    };
+
+    contentLoad = async (event) => {
+        const reponseData = await imageAPI.getImage(this.searchQuery, this.currentPage, 30);
+
+        console.log(reponseData);
+
+        if (reponseData.empty) {
+            // alert('없어용');
+            return;
         }
+
+        await masonryComponent.appendImages(reponseData.content);
+
+        this.currentPage++;
     };
 
     attachComponent = async () => {
@@ -45,11 +72,6 @@ export default class extends AbstractView {
 
         const root = $('.page-inside', myDOM);
         root.innerHTML = '';
-
-        masonryComponent.appendImages(
-            (await imageAPI.getImage(this.searchQuery, 1, 30)).content,
-            true
-        );
 
         root.appendChild(await masonryComponent.getComponent());
     };

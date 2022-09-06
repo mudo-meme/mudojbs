@@ -39,6 +39,11 @@ div.image-list-container {
                 &.hide {
                     display: none;
                 }
+
+                &.loading {
+                    height: 350px;
+                    animation: infinite 1s loading alternate;
+                }
             }
 
             &::-webkit-scrollbar {
@@ -74,6 +79,16 @@ div.image-list-container {
         &.hide {
             display: none;
         }
+    }
+}
+
+@keyframes loading {
+    from {
+        background-color: lightgray;
+    }
+
+    to {
+        background-color: gray;
     }
 }
 

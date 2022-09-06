@@ -1,6 +1,8 @@
 import filePreviewDOM from './filepreview.html';
 import './filepreview.scss';
 
+import CustomEvents from '../../js/events';
+
 import ImageAPI from '../../js/api';
 const imageAPI = new ImageAPI();
 
@@ -16,10 +18,20 @@ export default class {
 
     init = async () => {
         window.addEventListener(`ATTACHED_COMPONENT_filepreview_`, this.attached, { once: true });
+        window.addEventListener(`DEATTACHED_COMPONENT_filepreview_`, this.deattached, {
+            once: true,
+        });
     };
 
     attached = async (event) => {
         console.log('Attached filepreview Component');
+        $('div.file-preview-container').addEventListener('dragenter', this.dragenterEvent);
+        $('div.file-preview-container').addEventListener('dragover', this.dragoverEvent);
+        $('div.file-preview-container').addEventListener('drop', this.dropEvent);
+    };
+
+    deattached = (event) => {
+        console.log('Deattached filepreview Component');
     };
 
     dragenterEvent = (event) => {
@@ -39,7 +51,11 @@ export default class {
         const dt = event.dataTransfer;
         const files = dt.files;
 
-        this.handleFiles(files);
+        window.dispatchEvent(CustomEvents.ADDED_PRVIEW_ITEM(files));
+
+        // console.log(files);
+
+        // this.handleFiles(files);
     };
 
     handleFiles = (files) => {
@@ -64,6 +80,18 @@ export default class {
         $('#preview-image').src = imageData;
         $('.file-preview-container > .image-wrapper').classList.add('loaded');
         $('.file-preview-container > p').classList.add('hide');
+        $('div.navigate').classList.remove('hide');
+    };
+
+    hideImage = () => {
+        $('#preview-image').src = '';
+        $('.file-preview-container > .image-wrapper').classList.remove('loaded');
+        $('.file-preview-container > p').classList.remove('hide');
+        $('div.navigate').classList.add('hide');
+    };
+
+    pagination = (currentPage, maxPage) => {
+        $('div.navigate p.page').textContent = `${currentPage} / ${maxPage}`;
     };
 
     async getComponent() {

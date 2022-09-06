@@ -1,6 +1,8 @@
 import masonryListDOM from './masonrylist.html';
 import './masonrylist.scss';
 
+import CustomEvents from '../../js/events';
+
 import ImageAPI from '../../js/api';
 const imageAPI = new ImageAPI();
 
@@ -12,8 +14,6 @@ export default class {
     isAttached = false;
     containerName = null;
     isDev = false;
-
-    loadFunc = null;
 
     constructor(containerName, title = '') {
         this.containerName = containerName;
@@ -46,10 +46,6 @@ export default class {
         window.addEventListener('resize', this.resizeEvent);
     };
 
-    setLoadFunction = (func) => {
-        this.loadFunc = func;
-    };
-
     resizeEvent = (event) => {
         this.debounce(this.masonryLayout(event), 5);
     };
@@ -80,39 +76,22 @@ export default class {
         });
     };
 
-    appendImages = async (imageList, initial = false) => {
-        let listObject = null;
+    appendImages = async (imageList) => {
+        let loadPromises = [];
 
-        if (!this.isDev) {
-            listObject = imageList;
-        } else {
-            listObject = imageList;
+        for (let item of imageList) {
+            loadPromises.push(this.loadImage(item.imageUrl));
         }
 
-        for (let imageItem of listObject) {
-            let newDiv = initial ? this.myDOM.createElement('div') : document.createElement('div');
-            let newA = initial ? this.myDOM.createElement('a') : document.createElement('a');
-            let newImg = initial ? this.myDOM.createElement('img') : document.createElement('img');
+        let listObject = await Promise.all(loadPromises);
 
-            if (this.isDev) {
-                newA.setAttribute('href', `/view/${imageItem.imageUrl.split('.')[0]}`);
-                newImg.setAttribute('src', `../images/test_asset/${imageItem.imageUrl}`);
-            } else {
-                newA.setAttribute('href', `/view/${imageItem.id}`);
-                newImg.setAttribute('src', `${imageItem.imageUrl}`);
-            }
+        listObject = listObject.map((item, index) => {
+            return { index, element: item, id: imageList[index].id };
+        });
 
-            newDiv.setAttribute('class', 'masonry-item');
-            newImg.addEventListener('load', this.masonryLayout, { once: true });
-            newA.appendChild(newImg);
-            newDiv.appendChild(newA);
-
-            if (initial) {
-                $('.masonry-container', this.myDOM).appendChild(newDiv);
-            } else {
-                $('.masonry-container').appendChild(newDiv);
-            }
-        }
+        listObject.forEach((item) => {
+            this.createMasonryItem({ element: item.element, id: item.id });
+        });
     };
 
     waitForImages = () => {
@@ -129,45 +108,61 @@ export default class {
         return Promise.all(allPromises);
     };
 
-    attached = async (event) => {
-        switch (event.detail.target) {
-            case 'new':
-                console.log(`Attached masonrylist(${event.detail.target}) component`);
-                break;
+    createMasonryItem = (itemInfo) => {
+        let newDiv = document.createElement('div');
+        let newA = document.createElement('a');
 
-            case 'related':
-                console.log(`Attached masonrylist(${event.detail.target}) component`);
-                break;
-        }
+        newA.setAttribute('href', `/view/${itemInfo.id}`);
+        newA.appendChild(itemInfo.element);
+        newDiv.setAttribute('class', 'masonry-item');
+        newDiv.appendChild(newA);
 
-        await this.waitForImages();
+        $('.masonry-container').appendChild(newDiv);
         this.masonryLayout();
+    };
 
-        let lastItem = $('.masonry-item:last-child');
+    loadImage = async (url) => {
+        return new Promise((resolve, reject) => {
+            const tmpImg = document.createElement('img');
+            tmpImg.setAttribute('src', url);
 
-        const io = new IntersectionObserver(
-            async (entry, observer) => {
-                const ioTarget = entry[0].target;
+            tmpImg.addEventListener('load', (event) => resolve(tmpImg), {
+                once: true,
+            });
 
-                if (entry[0].isIntersecting) {
-                    io.unobserve(lastItem);
-                    // this.appendImages(await imageAPI.getImageRandom());
-                    console.log(this.loadFunc);
-                    this.loadFunc();
+            tmpImg.src = url;
+        });
+    };
 
-                    lastItem = $('.masonry-item:last-child');
-                    io.observe(lastItem);
+    attached = async (event) => {
+        console.log(`Attached masonrylist(${event.detail.target}) component`);
+
+        const config = { attributes: true, childList: true, subtree: true };
+        const observer = new MutationObserver((mutation, observer) => {
+            let lastItem = $('.masonry-item:last-child');
+
+            const io = new IntersectionObserver(
+                async (entry, observer) => {
+                    const ioTarget = entry[0].target;
+
+                    if (entry[0].isIntersecting) {
+                        io.unobserve(lastItem);
+                        window.dispatchEvent(CustomEvents.CONTENT_LOAD());
+                    }
+                },
+                {
+                    threshold: 0.5,
                 }
-            },
-            {
-                threshold: 0.5,
-            }
-        );
+            );
 
-        io.observe(lastItem);
+            io.observe(lastItem);
+        });
+
+        observer.observe($('div.masonry-container'), config);
     };
 
     deattached = (event) => {
+        console.log(`Dattached masonrylist(${event.detail.target}) component`);
         window.removeEventListener('resize', this.resizeEvent);
     };
 

@@ -25,6 +25,12 @@ export default class {
             { once: true }
         );
 
+        window.addEventListener(
+            `DEATTACHED_COMPONENT_imagelist_${this.containerName}`,
+            this.deattached,
+            { once: true }
+        );
+
         $('div.image-list-container', this.myDOM).dataset.container = this.containerName;
         $('p.title', this.myDOM).textContent = title;
         $('button.load-more', this.myDOM).addEventListener('click', this.clickEvent);
@@ -47,6 +53,10 @@ export default class {
         );
     };
 
+    deattached = (event) => {
+        console.log(`Deattached imagelist(${event.detail.target}) Component`);
+    };
+
     clickEvent = (event) => {
         if (!this.isOpened) {
             $$(`[data-container=${this.containerName}] li.image-item.hide`).forEach((item) => {
@@ -58,46 +68,74 @@ export default class {
         }
     };
 
-    createEleFromImages = (imageList) => {
+    createEleFromImages = async (imageList) => {
         // <li class="image-item">
         //     <a href="#">
         //         <img src="../../assets/images/test_asset/10.jpg" alt="" />
         //     </a>
         // </li>;
 
-        let listObject = null;
+        let loadPromises = [];
 
-        console.log(imageList);
-        if (this.isDev) {
-            listObject = imageList.entries();
-        } else {
-            listObject = imageList.entries();
+        for (let item of imageList) {
+            loadPromises.push(this.loadImage(item.imageUrl));
         }
 
-        for (let [index, imageItem] of listObject) {
-            let newLi = this.myDOM.createElement('li');
-            let newA = this.myDOM.createElement('a');
-            let newImg = this.myDOM.createElement('img');
+        let listObject = await Promise.all(loadPromises);
 
-            if (this.isDev) {
-                newA.setAttribute('href', `/view/${imageItem.imageUrl.split('.')[0]}`);
-                newImg.setAttribute('src', `/images/test_asset/${imageItem.imageUrl}`);
-            } else {
-                newA.setAttribute('href', `/view/${imageItem.id}`);
-                newImg.setAttribute('src', imageItem.imageUrl);
-            }
+        listObject = listObject.map((item, index) => {
+            return { index, element: item, id: imageList[index].id };
+        });
 
+        const newUl = document.createElement('ul');
+        newUl.classList.add('image-list');
+
+        for (let imageItem of listObject) {
+            let newLi = document.createElement('li');
+            let newA = document.createElement('a');
+
+            // if (this.isDev) {
+            //     newA.setAttribute('href', `/view/${imageItem.imageUrl.split('.')[0]}`);
+            //     newImg.setAttribute('src', `/images/test_asset/${imageItem.imageUrl}`);
+            // } else {
+            //     newA.setAttribute('href', `/view/${imageItem.id}`);
+            //     newImg.setAttribute('src', imageItem.imageUrl);
+            // }
+
+            newA.setAttribute('href', `/view/${imageItem.id}`);
             newLi.setAttribute('class', 'image-item');
 
-            if (index > 4) {
+            if (imageItem.index > 4) {
                 newLi.classList.add('hide');
             }
 
-            newA.appendChild(newImg);
+            newA.appendChild(imageItem.element);
             newLi.appendChild(newA);
 
-            $('ul.image-list', this.myDOM).appendChild(newLi);
+            newUl.appendChild(newLi);
         }
+
+        // $('ul.image-list', this.myDOM).appendChild(newUl);
+        // $('div.image-list-wrapper', this.myDOM).replaceChild(newUl, $('ul.image-list', this.myDOM));
+
+        // console.log(this.myDOM);
+        $(`[data-container=${this.containerName}] div.image-list-wrapper`).replaceChild(
+            newUl,
+            $(`[data-container=${this.containerName}] ul.image-list`)
+        );
+    };
+
+    loadImage = async (url) => {
+        return new Promise((resolve, reject) => {
+            const tmpImg = document.createElement('img');
+            tmpImg.setAttribute('src', url);
+
+            tmpImg.addEventListener('load', (event) => resolve(tmpImg), {
+                once: true,
+            });
+
+            tmpImg.src = url;
+        });
     };
 
     async getComponent() {

@@ -30,7 +30,10 @@ export default class extends AbstractView {
     init = async () => {
         myDOM = new DOMParser().parseFromString(DetailView, 'text/html');
 
-        window.addEventListener(`ATTACHED_VIEW`, this.attached, { once: true });
+        window.addEventListener(`ATTACHED_VIEW_view`, this.attached, { once: true });
+        window.addEventListener('DEATTACHED_VIEW_view', this.deattached, { once: true });
+
+        window.addEventListener(`CONTENT_LOAD`, this.contentLoad);
 
         await this.attachComponent();
     };
@@ -41,11 +44,6 @@ export default class extends AbstractView {
 
         imageViewComponent = new ImageView(this.imageId);
         masonryComponent = new MasonryList('related', '관련 이미지');
-
-        masonryComponent.setLoadFunction(async () => {
-            this.appendImages(await imageAPI.getImageRelated());
-        });
-
         // masonryComponent.appendImages(await imageAPI.getImage('임시', 1, 30), true);
         masonryComponent.appendImages(await imageAPI.getImageRandom(), true);
 
@@ -53,13 +51,25 @@ export default class extends AbstractView {
         root.appendChild(await masonryComponent.getComponent());
     };
 
-    attached = (event) => {
-        if (event.detail.target === 'view') {
-            console.log('Attached Detail View');
+    contentLoad = async (event) => {
+        console.log('from DetailView');
+        masonryComponent.appendImages(await imageAPI.getImageRandom());
+    };
 
-            window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('imageview'));
-            window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'related'));
-        }
+    attached = (event) => {
+        console.log('Attached Detail View');
+
+        window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('imageview'));
+        window.dispatchEvent(CustomEvents.ATTACHED_COMPONENT('masonrylist', 'related'));
+    };
+
+    deattached = (event) => {
+        console.log('Deattached Detail View');
+        // TODO Spread the event to components
+        window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('imageview'));
+        window.dispatchEvent(CustomEvents.DEATTACHED_COMPONENT('masonrylist', 'related'));
+
+        window.removeEventListener(`CONTENT_LOAD`, this.contentLoad);
     };
 
     async getView() {

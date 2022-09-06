@@ -1,7 +1,7 @@
 {
-    "name": "my-webpack-project",
+    "name": "mudojbs",
     "version": "1.0.0",
-    "description": "My webpack project",
+    "description": "mudojbs: memes of mudo",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",

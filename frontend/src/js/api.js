@@ -4,10 +4,13 @@ export default class {
     BASE_URL = 'https://imbilly.site/api/v1';
     TEST_BASE_URL = 'http://localhost:8080/api/v1';
 
+    abortController = null;
+    isSearch = false;
+
     constructor() {}
 
     getImage = async (query, page = 1, size = 15) => {
-        let fetchPromise = await this.myfetch(`/image?size=${size}`);
+        let fetchPromise = await this.myfetch(`/image?query=${query}&size=${size}&page=${page}`);
         return await fetchPromise.json();
     };
 
@@ -60,9 +63,16 @@ export default class {
         return await fetchPromise.json();
     };
 
-    getImageKeyword = async (size = 10) => {
-        let fetchPromise = await this.myfetch(`/image/popular?size=${size}`);
-        return await fetchPromise.json();
+    getImageKeyword = async (signal, query, size = 5) => {
+        try {
+            let fetchPromise = await fetch(this.BASE_URL + `/tag?query=${query}&size=${size}`, {
+                signal,
+            });
+            return await fetchPromise.json();
+        } catch (err) {}
+
+        // let fetchPromise = await this.myfetch(`/tag?query=${query}&size=${size}`);
+        // return await fetchPromise.json();
     };
 
     myfetch = (url) => {

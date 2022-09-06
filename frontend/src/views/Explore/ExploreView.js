@@ -18,7 +18,19 @@ export default class extends AbstractView {
 
     init = async () => {
         myDOM = new DOMParser().parseFromString(ExploreView, 'text/html');
+
+        window.addEventListener('ATTACHED_VIEW_explore', this.attached, { once: true });
+        window.addEventListener('DEATTACHED_VIEW_explore', this.deattached, { once: true });
+
         await this.attachComponent();
+    };
+
+    attached = async (event) => {
+        console.log('Attached Explore View');
+    };
+
+    deattached = (event) => {
+        console.log('Deattached Explore View');
     };
 
     attachComponent = async () => {
